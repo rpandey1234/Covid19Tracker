@@ -7,4 +7,5 @@
     <color name="colorPositive">#FF7B00</color>
     <color name="colorDeath">#A9002B</color>
     <color name="colorBackgroundShade">#EBEEF6</color>
+    <color name="colorSelectedBackground">@color/colorPrimary</color>
 </resources>

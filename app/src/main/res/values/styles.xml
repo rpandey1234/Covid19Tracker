@@ -5,6 +5,14 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:radioButtonStyle">@style/CustomRadioButton</item>
+    </style>
+
+    <style name="CustomRadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:background">@drawable/button_background</item>
+        <item name="android:button">@null</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/color_button_text</item>
     </style>
 
 </resources>
