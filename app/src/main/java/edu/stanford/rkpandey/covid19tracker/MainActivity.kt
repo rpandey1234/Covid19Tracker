@@ -42,8 +42,8 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 nationalDailyData = nationalData.reversed()
-                // TODO: Update graph with national data
-                Log.i(TAG, "TODO: Update graph with national data")
+                Log.i(TAG, "Update graph with national data")
+                updateDisplayWithData(nationalDailyData)
             }
         })
 
@@ -65,5 +65,11 @@ class MainActivity : AppCompatActivity() {
                 Log.i(TAG, "TODO: Should update spinner with state names")
             }
         })
+    }
+
+    private fun updateDisplayWithData(dailyData: List<CovidData>) {
+        // Create a new SparkAdapter with the data
+        // Update radio buttons to select positive cases and max time by default
+        // Display metric for most recent date
     }
 }
