@@ -4,11 +4,15 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.google.gson.GsonBuilder
+import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.text.NumberFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 private const val TAG = "MainActivity"
 private const val BASE_URL = "https://covidtracking.com/api/v1/"
@@ -69,7 +73,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateDisplayWithData(dailyData: List<CovidData>) {
         // Create a new SparkAdapter with the data
+        val adapter = CovidSparkAdapter(nationalDailyData)
+        sparkView.adapter = adapter
         // Update radio buttons to select positive cases and max time by default
+        radioButtonPositive.isChecked = true
+        radioButtonMax.isChecked = true
         // Display metric for most recent date
+        updateInfoForDate(nationalDailyData.last())
+    }
+
+    private fun updateInfoForDate(covidData: CovidData) {
+        tvMetric.text = NumberFormat.getInstance().format(covidData.positiveIncrease)
+        val outputDateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.US)
+        tvDateLabel.text = outputDateFormat.format(covidData.dateChecked)
     }
 }
