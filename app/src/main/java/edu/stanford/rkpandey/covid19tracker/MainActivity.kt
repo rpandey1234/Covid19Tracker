@@ -7,6 +7,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import com.google.gson.GsonBuilder
+import com.robinhood.ticker.TickerUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -97,6 +98,8 @@ class MainActivity : AppCompatActivity() {
                 updateInfoForDate(itemData)
             }
         }
+        tickerView.setCharacterLists(TickerUtils.provideNumberList())
+
         // Respond to radio button selected events
         radioGroupTimeSelection.setOnCheckedChangeListener { _, checkedId ->
             adapter.daysAgo = when (checkedId) {
@@ -126,7 +129,7 @@ class MainActivity : AppCompatActivity() {
         }
         @ColorInt val colorInt = ContextCompat.getColor(this, colorRes)
         sparkView.lineColor = colorInt
-        tvMetric.setTextColor(colorInt)
+        tickerView.textColor = colorInt
 
         // Update metric on the adpater
         adapter.metric = metric
@@ -155,7 +158,7 @@ class MainActivity : AppCompatActivity() {
             Metric.POSITIVE -> covidData.positiveIncrease
             Metric.DEATH -> covidData.deathIncrease
         }
-        tvMetric.text = NumberFormat.getInstance().format(numCases)
+        tickerView.text = NumberFormat.getInstance().format(numCases)
         val outputDateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.US)
         tvDateLabel.text = outputDateFormat.format(covidData.dateChecked)
     }

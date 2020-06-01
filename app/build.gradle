@@ -46,4 +46,5 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.robinhood.spark:spark:1.2.0'
     implementation 'com.github.arcadefire:nice-spinner:1.4.4'
+    implementation 'com.robinhood.ticker:ticker:2.0.2'
 }

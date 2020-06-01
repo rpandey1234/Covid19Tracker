@@ -65,6 +65,9 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp"
+        android:background="@color/colorBackgroundShade"
         app:layout_constraintBottom_toTopOf="@+id/radioGroupTimeSelection"
         app:layout_constraintTop_toBottomOf="@id/radioGroupMetricSelection" />
 
@@ -73,9 +76,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:background="@color/colorBackgroundShade"
+        android:paddingBottom="8dp"
         android:gravity="center"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/tvMetric">
+        app:layout_constraintBottom_toTopOf="@+id/tickerView">
 
         <RadioButton
             android:id="@+id/radioButtonWeek"
@@ -107,8 +112,8 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:text="May 31, 2020" />
 
-    <TextView
-        android:id="@+id/tvMetric"
+    <com.robinhood.ticker.TickerView
+        android:id="@+id/tickerView"
         android:layout_width="wrap_content"
         android:layout_height="80dp"
         android:gravity="center"
