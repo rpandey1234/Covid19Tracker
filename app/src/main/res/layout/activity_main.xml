@@ -17,6 +17,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <org.angmarch.views.NiceSpinner
+        android:id="@+id/spinnerSelect"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:layout_constraintBottom_toBottomOf="@+id/tvSelectState"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvSelectState"
+        app:layout_constraintTop_toTopOf="@+id/tvSelectState"
+        app:popupTextAlignment="start" />
+
     <RadioGroup
         android:id="@+id/radioGroupMetricSelection"
         android:layout_width="match_parent"

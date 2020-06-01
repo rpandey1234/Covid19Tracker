@@ -19,6 +19,7 @@ import java.util.*
 
 private const val TAG = "MainActivity"
 private const val BASE_URL = "https://covidtracking.com/api/v1/"
+private const val ALL_STATES = "All (Nationwide)"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var adapter: CovidSparkAdapter
@@ -71,10 +72,22 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 perStateDailyData = statesData.reversed().groupBy { it.state }
-                // TODO: Should update spinner with state names
-                Log.i(TAG, "TODO: Should update spinner with state names")
+                Log.i(TAG, "Update spinner with state names")
+                updateSpinnerWithStateData(perStateDailyData.keys)
             }
         })
+    }
+
+    private fun updateSpinnerWithStateData(stateNames: Set<String>) {
+        val stateAbbreviationList = stateNames.toMutableList()
+        stateAbbreviationList.sort()
+        stateAbbreviationList.add(0, ALL_STATES)
+        spinnerSelect.attachDataSource(stateAbbreviationList)
+        spinnerSelect.setOnSpinnerItemSelectedListener { parent, _, position, _ ->
+            val selectedState = parent.getItemAtPosition(position) as String
+            val selectedData = perStateDailyData[selectedState] ?: nationalDailyData
+            updateDisplayWithData(selectedData)
+        }
     }
 
     private fun setupEventListeners() {
