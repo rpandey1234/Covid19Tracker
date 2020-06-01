@@ -3,6 +3,9 @@ package edu.stanford.rkpandey.covid19tracker
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
@@ -19,6 +22,7 @@ private const val BASE_URL = "https://covidtracking.com/api/v1/"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var adapter: CovidSparkAdapter
+    private lateinit var currentlyShownData: List<CovidData>
     private lateinit var perStateDailyData: Map<String, List<CovidData>>
     private lateinit var nationalDailyData: List<CovidData>
 
@@ -81,14 +85,52 @@ class MainActivity : AppCompatActivity() {
             }
         }
         // Respond to radio button selected events
+        radioGroupTimeSelection.setOnCheckedChangeListener { _, checkedId ->
+            adapter.daysAgo = when (checkedId) {
+                R.id.radioButtonWeek -> TimeScale.WEEK
+                R.id.radioButtonMonth -> TimeScale.MONTH
+                else -> TimeScale.MAX
+            }
+            // Display the last day of the metric
+            updateInfoForDate(currentlyShownData.last())
+            adapter.notifyDataSetChanged()
+        }
+        radioGroupMetricSelection.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.radioButtonNegative -> updateDisplayMetric(Metric.NEGATIVE)
+                R.id.radioButtonPositive -> updateDisplayMetric(Metric.POSITIVE)
+                R.id.radioButtonDeath -> updateDisplayMetric(Metric.DEATH)
+            }
+        }
+    }
+
+    private fun updateDisplayMetric(metric: Metric) {
+        // Update color of the chart
+        @ColorRes val colorRes = when (metric) {
+            Metric.NEGATIVE -> R.color.colorNegative
+            Metric.POSITIVE -> R.color.colorPositive
+            Metric.DEATH -> R.color.colorDeath
+        }
+        @ColorInt val colorInt = ContextCompat.getColor(this, colorRes)
+        sparkView.lineColor = colorInt
+        tvMetric.setTextColor(colorInt)
+
+        // Update metric on the adpater
+        adapter.metric = metric
+        adapter.notifyDataSetChanged()
+
+        // Reset number/date shown for most recent date
+        updateInfoForDate(currentlyShownData.last())
     }
 
     private fun updateDisplayWithData(dailyData: List<CovidData>) {
+        currentlyShownData = dailyData
         // Create a new SparkAdapter with the data
         adapter = CovidSparkAdapter(dailyData)
         sparkView.adapter = adapter
         // Update radio buttons to select positive cases and max time by default
         radioButtonPositive.isChecked = true
+        updateDisplayMetric(Metric.POSITIVE)
         radioButtonMax.isChecked = true
         // Display metric for most recent date
         updateInfoForDate(dailyData.last())
