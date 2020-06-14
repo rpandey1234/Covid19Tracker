@@ -18,11 +18,14 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-private const val TAG = "MainActivity"
-private const val BASE_URL = "https://covidtracking.com/api/v1/"
-private const val ALL_STATES = "All (Nationwide)"
-
 class MainActivity : AppCompatActivity() {
+
+    companion object {
+        const val TAG = "MainActivity"
+        const val BASE_URL = "https://covidtracking.com/api/v1/"
+        const val ALL_STATES = "All (Nationwide)"
+    }
+
     private lateinit var adapter: CovidSparkAdapter
     private lateinit var currentlyShownData: List<CovidData>
     private lateinit var perStateDailyData: Map<String, List<CovidData>>
@@ -40,7 +43,7 @@ class MainActivity : AppCompatActivity() {
             .build()
         val covidService = retrofit.create(CovidService::class.java)
 
-        covidService.getNationalData().enqueue(object: Callback<List<CovidData>> {
+        covidService.getNationalData().enqueue(object : Callback<List<CovidData>> {
             override fun onFailure(call: Call<List<CovidData>>, t: Throwable) {
                 Log.e(TAG, "onFailure $t")
             }
@@ -60,12 +63,15 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        covidService.getStatesData().enqueue(object: Callback<List<CovidData>> {
+        covidService.getStatesData().enqueue(object : Callback<List<CovidData>> {
             override fun onFailure(call: Call<List<CovidData>>, t: Throwable) {
                 Log.e(TAG, "onFailure $t")
             }
 
-            override fun onResponse(call: Call<List<CovidData>>, response: Response<List<CovidData>>) {
+            override fun onResponse(
+                call: Call<List<CovidData>>,
+                response: Response<List<CovidData>>
+            ) {
                 Log.i(TAG, "onResponse $response")
                 val statesData = response.body()
                 if (statesData == null) {
@@ -132,7 +138,7 @@ class MainActivity : AppCompatActivity() {
         sparkView.lineColor = colorInt
         tickerView.textColor = colorInt
 
-        // Update metric on the adpater
+        // Update metric on the adapter
         adapter.metric = metric
         adapter.notifyDataSetChanged()
 
@@ -147,10 +153,8 @@ class MainActivity : AppCompatActivity() {
         sparkView.adapter = adapter
         // Update radio buttons to select positive cases and max time by default
         radioButtonPositive.isChecked = true
-        updateDisplayMetric(Metric.POSITIVE)
         radioButtonMax.isChecked = true
-        // Display metric for most recent date
-        updateInfoForDate(dailyData.last())
+        updateDisplayMetric(Metric.POSITIVE)
     }
 
     private fun updateInfoForDate(covidData: CovidData) {
