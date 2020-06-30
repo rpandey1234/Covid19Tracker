@@ -1,0 +1,1 @@
+An open-source Android COVID-19 tracking app built using core UI components from the Robinhood stock trading app. The app displays key metrics around the growth of coronavirus, including the number of positive cases, negative cases, and deaths per day. The data for our app comes from The COVID Tracking Project: https://covidtracking.com/api
