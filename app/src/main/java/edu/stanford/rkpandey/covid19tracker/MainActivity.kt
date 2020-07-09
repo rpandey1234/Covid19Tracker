@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity() {
                     return
                 }
 
-                perStateDailyData = statesData.reversed().groupBy { it.state }
+                perStateDailyData = statesData.filter { it.dateChecked != null }.reversed().groupBy { it.state }
                 Log.i(TAG, "Update spinner with state names")
                 updateSpinnerWithStateData(perStateDailyData.keys)
             }
