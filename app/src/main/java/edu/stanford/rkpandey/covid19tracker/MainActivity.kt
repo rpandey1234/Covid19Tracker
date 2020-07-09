@@ -79,7 +79,18 @@ class MainActivity : AppCompatActivity() {
                     return
                 }
 
-                perStateDailyData = statesData.filter { it.dateChecked != null }.reversed().groupBy { it.state }
+                perStateDailyData = statesData
+                    .filter { it.dateChecked != null }
+                    .map { // State data may have negative deltas, which don't make sense to graph
+                        CovidData(
+                            it.dateChecked,
+                            it.positiveIncrease.coerceAtLeast(0),
+                            it.negativeIncrease.coerceAtLeast(0),
+                            it.deathIncrease.coerceAtLeast(0),
+                            it.state
+                        ) }
+                    .reversed()
+                    .groupBy { it.state }
                 Log.i(TAG, "Update spinner with state names")
                 updateSpinnerWithStateData(perStateDailyData.keys)
             }
