@@ -5,6 +5,8 @@
 
 An open-source Android COVID-19 tracking app built using core UI components from the [Robinhood](https://play.google.com/store/apps/details?id=com.robinhood.android) stock trading app. The app displays key metrics around the growth of coronavirus, including the number of positive cases, negative cases, and deaths per day.
 
+Download the app from [F-Droid](https://f-droid.org/packages/edu.stanford.rkpandey.covid19tracker/)
+
 **Author:** [Rahul Pandey](https://www.youtube.com/rpandey1234)
 
 This app uses data from the [COVID tracking project](https://twitter.com/covid19tracking) as the data source. The app currently displays data for the US, including all the states and territories.
