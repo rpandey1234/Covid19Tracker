@@ -5,9 +5,8 @@ import androidx.lifecycle.*
 import edu.stanford.rkpandey.covid19tracker.models.CovidData
 import edu.stanford.rkpandey.covid19tracker.network.Api
 import kotlinx.coroutines.launch
-import retrofit2.await
 
-enum class ApiStatus { LOADING, ERROR, DONE, NONE }
+enum class ApiStatus { LOADING, ERROR, DONE }
 
 class ChartViewModel() : ViewModel() {
     private val _status = MutableLiveData<ApiStatus>()
@@ -32,8 +31,9 @@ class ChartViewModel() : ViewModel() {
 
     private fun fetchNationalData(){
         viewModelScope.launch {
-            val getPropertiesDeferred =  Api.retrofitService.getNationalData()
             try {
+                val getPropertiesDeferred =  Api.retrofitService.getNationalData()
+
                 _status.value = ApiStatus.LOADING
                 val listResult = getPropertiesDeferred.await()
 
@@ -42,21 +42,20 @@ class ChartViewModel() : ViewModel() {
                     _status.value = ApiStatus.DONE
                 }
                 else{
-                    _nationalData.value = ArrayList()
-                    _status.value = ApiStatus.NONE
+                    _status.value = ApiStatus.ERROR
                 }
             } catch (e: Exception) {
                 _status.value = ApiStatus.ERROR
                 Log.e("error", e.toString())
-                _nationalData.value = ArrayList()
             }
         }
     }
 
     private fun fetchStatesData(){
         viewModelScope.launch {
-            val getPropertiesDeferred =  Api.retrofitService.getStatesData()
             try {
+                val getPropertiesDeferred =  Api.retrofitService.getStatesData()
+
                 _status.value = ApiStatus.LOADING
                 val listResult = getPropertiesDeferred.await()
 
@@ -71,12 +70,11 @@ class ChartViewModel() : ViewModel() {
                     _status.value = ApiStatus.DONE
                 }
                 else{
-                    _status.value = ApiStatus.NONE
+                    _status.value = ApiStatus.ERROR
                 }
             } catch (e: Exception) {
                 _status.value = ApiStatus.ERROR
                 Log.e("error", e.toString())
-                _statesData.value = ArrayList()
             }
         }
     }

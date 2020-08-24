@@ -12,7 +12,17 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.MainActivity">
+        tools:context=".ui.MainActivity"    >
+
+        <ImageView
+            android:id="@+id/status_image"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            app:errorDisplay="@{viewModel.status}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tvSelectState"
@@ -21,6 +31,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:text="@string/state"
+            app:errorVisibility="@{viewModel.status}"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -33,6 +44,7 @@
             android:layout_marginEnd="32dp"
             android:ellipsize="end"
             android:maxLines="1"
+            app:errorVisibility="@{viewModel.status}"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintBottom_toBottomOf="@+id/tvSelectState"
             app:layout_constraintEnd_toEndOf="parent"
@@ -46,6 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:gravity="center"
+            app:errorVisibility="@{viewModel.status}"
             android:orientation="horizontal"
             app:layout_constraintTop_toBottomOf="@+id/tvSelectState">
 
@@ -75,6 +88,7 @@
             android:layout_marginTop="8dp"
             android:paddingTop="16dp"
             android:paddingBottom="8dp"
+            app:errorVisibility="@{viewModel.status}"
             android:background="@color/colorBackgroundShade"
             app:layout_constraintBottom_toTopOf="@+id/radioGroupTimeSelection"
             app:layout_constraintTop_toBottomOf="@id/radioGroupMetricSelection" />
@@ -87,6 +101,7 @@
             android:background="@color/colorBackgroundShade"
             android:paddingBottom="8dp"
             android:gravity="center"
+            app:errorVisibility="@{viewModel.status}"
             android:orientation="horizontal"
             app:layout_constraintBottom_toTopOf="@+id/tickerView">
 
@@ -115,6 +130,7 @@
             android:layout_height="80dp"
             android:layout_marginStart="16dp"
             android:gravity="center"
+            app:errorVisibility="@{viewModel.status}"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -125,6 +141,7 @@
             android:layout_width="wrap_content"
             android:layout_height="80dp"
             android:gravity="center"
+            app:errorVisibility="@{viewModel.status}"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

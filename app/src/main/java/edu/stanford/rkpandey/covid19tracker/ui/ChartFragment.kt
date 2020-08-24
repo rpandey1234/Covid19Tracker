@@ -58,15 +58,6 @@ class ChartFragment : Fragment() {
         viewModel.statesData.observe(viewLifecycleOwner, Observer { it ->
             Log.d("debug", "Update graph with states data -> ${it.toString()}")
 
-            it.forEach {
-                if (it.dateChecked != null){
-                    //Log.d("debug", "Not Null ${it.dateChecked.toString()}")
-                }
-                else{
-                    Log.d("debug", "Null ${it.dateChecked.toString()}")
-                }
-            }
-
             perStateDailyData = it
             //.filter { it.dateChecked != null }
             .map { // State data may have negative deltas, which don't make sense to graph
