@@ -1,28 +1,30 @@
-package edu.stanford.rkpandey.covid19tracker
+package edu.stanford.rkpandey.covid19tracker.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
-import com.google.gson.GsonBuilder
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.robinhood.ticker.TickerUtils
-import kotlinx.android.synthetic.main.activity_main.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import edu.stanford.rkpandey.covid19tracker.R
+import edu.stanford.rkpandey.covid19tracker.databinding.FragmentChartBinding
+import edu.stanford.rkpandey.covid19tracker.models.CovidData
+import edu.stanford.rkpandey.covid19tracker.viewmodels.ChartViewModel
+import kotlinx.android.synthetic.main.fragment_chart.*
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.HashMap
 
-class MainActivity : AppCompatActivity() {
+class ChartFragment : Fragment() {
 
     companion object {
-        const val TAG = "MainActivity"
-        const val BASE_URL = "https://covidtracking.com/api/v1/"
         const val ALL_STATES = "All (Nationwide)"
     }
 
@@ -31,76 +33,59 @@ class MainActivity : AppCompatActivity() {
     private lateinit var perStateDailyData: Map<String, List<CovidData>>
     private lateinit var nationalDailyData: List<CovidData>
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        supportActionBar?.title = getString(R.string.app_description)
+    private val viewModel: ChartViewModel by lazy {
+        ViewModelProvider(this).get(ChartViewModel::class.java)
+    }
 
-        val gson = GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create()
-        val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .build()
-        val covidService = retrofit.create(CovidService::class.java)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        Log.d("debug", "onCreateView")
+        val binding = FragmentChartBinding.inflate(inflater)
 
-        covidService.getNationalData().enqueue(object : Callback<List<CovidData>> {
-            override fun onFailure(call: Call<List<CovidData>>, t: Throwable) {
-                Log.e(TAG, "onFailure $t")
-            }
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
 
-            override fun onResponse(call: Call<List<CovidData>>, response: Response<List<CovidData>>) {
-                Log.i(TAG, "onResponse $response")
-                val nationalData = response.body()
-                if (nationalData == null) {
-                    Log.w(TAG, "Did not receive a valid response body")
-                    return
-                }
-
-                setupEventListeners()
-                nationalDailyData = nationalData.reversed()
-                Log.i(TAG, "Update graph with national data")
-                updateDisplayWithData(nationalDailyData)
-            }
+        viewModel.nationalData.observe(viewLifecycleOwner, Observer {
+            setupEventListeners()
+            nationalDailyData = it.reversed()
+            Log.d("debug", "Update graph with national data -> $it")
+            updateDisplayWithData(nationalDailyData)
         })
 
-        covidService.getStatesData().enqueue(object : Callback<List<CovidData>> {
-            override fun onFailure(call: Call<List<CovidData>>, t: Throwable) {
-                Log.e(TAG, "onFailure $t")
-            }
+        viewModel.statesData.observe(viewLifecycleOwner, Observer { it ->
+            Log.d("debug", "Update graph with states data -> ${it.toString()}")
 
-            override fun onResponse(
-                call: Call<List<CovidData>>,
-                response: Response<List<CovidData>>
-            ) {
-                Log.i(TAG, "onResponse $response")
-                val statesData = response.body()
-                if (statesData == null) {
-                    Log.w(TAG, "Did not receive a valid response body")
-                    return
-                }
-
-                perStateDailyData = statesData
-                    .filter { it.dateChecked != null }
-                    .map { // State data may have negative deltas, which don't make sense to graph
-                        CovidData(
-                            it.dateChecked,
-                            it.positiveIncrease.coerceAtLeast(0),
-                            it.negativeIncrease.coerceAtLeast(0),
-                            it.deathIncrease.coerceAtLeast(0),
-                            it.state
-                        ) }
-                    .reversed()
-                    .groupBy { it.state }
-                Log.i(TAG, "Update spinner with state names")
-                updateSpinnerWithStateData(perStateDailyData.keys)
+            perStateDailyData = it
+            //.filter { it.dateChecked != null }
+            .map { // State data may have negative deltas, which don't make sense to graph
+                CovidData(
+                    it.dateChecked,
+                    it.positiveIncrease.coerceAtLeast(0),
+                    it.negativeIncrease.coerceAtLeast(0),
+                    it.deathIncrease.coerceAtLeast(0),
+                    it.state
+                )
             }
+            .reversed()
+            .groupBy { it.state }
+
+            Log.d("debug", "Update spinner with state names -> ${perStateDailyData.keys}")
+            updateSpinnerWithStateData(perStateDailyData.keys)
         })
+
+        return binding.root
     }
 
     private fun updateSpinnerWithStateData(stateNames: Set<String>) {
         val stateAbbreviationList = stateNames.toMutableList()
         stateAbbreviationList.sort()
-        stateAbbreviationList.add(0, ALL_STATES)
+        stateAbbreviationList.add(
+            0,
+            MainActivity.ALL_STATES
+        )
         spinnerSelect.attachDataSource(stateAbbreviationList)
         spinnerSelect.setOnSpinnerItemSelectedListener { parent, _, position, _ ->
             val selectedState = parent.getItemAtPosition(position) as String
@@ -145,9 +130,13 @@ class MainActivity : AppCompatActivity() {
             Metric.POSITIVE -> R.color.colorPositive
             Metric.DEATH -> R.color.colorDeath
         }
-        @ColorInt val colorInt = ContextCompat.getColor(this, colorRes)
-        sparkView.lineColor = colorInt
-        tickerView.textColor = colorInt
+        @ColorInt val colorInt = context?.let { ContextCompat.getColor(it, colorRes) }
+        if (colorInt != null) {
+            sparkView.lineColor = colorInt
+        }
+        if (colorInt != null) {
+            tickerView.textColor = colorInt
+        }
 
         // Update metric on the adapter
         adapter.metric = metric

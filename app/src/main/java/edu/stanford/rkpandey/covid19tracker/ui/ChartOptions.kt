@@ -1,4 +1,4 @@
-package edu.stanford.rkpandey.covid19tracker
+package edu.stanford.rkpandey.covid19tracker.ui
 
 enum class Metric {
     NEGATIVE, POSITIVE, DEATH

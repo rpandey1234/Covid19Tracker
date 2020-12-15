@@ -1,7 +1,8 @@
-package edu.stanford.rkpandey.covid19tracker
+package edu.stanford.rkpandey.covid19tracker.ui
 
 import android.graphics.RectF
 import com.robinhood.spark.SparkAdapter
+import edu.stanford.rkpandey.covid19tracker.models.CovidData
 
 class CovidSparkAdapter(private val dailyData: List<CovidData>) : SparkAdapter() {
 

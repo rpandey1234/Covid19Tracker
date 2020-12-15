@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">COVID-19 Tracker</string>
     <string name="app_description">COVID-19 cases per day</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="state">State</string>
+    <string name="negative">Negative</string>
+    <string name="positive">Positive</string>
+    <string name="deaths">Deaths</string>
+    <string name="_1_week">1 Week</string>
+    <string name="_1_month">1 Month</string>
+    <string name="max">Max</string>
 </resources>
